@@ -163,7 +163,7 @@ They are:
 }
 ```
 
-- `randomize` (default = false) enables the randomization of the sequences in the test session. Randomization is done in a way that, if `source_id` has been defined for each sequences, no sequences with the same `source_id` can appear consecutively in the session. This conditional randomization has been applied by simply running the randomization many times until the condition is fulfilled. To avoid infinite loops, there is a limit of `max_random_tries` iterations (default = 1000).
+- `randomize` (default = false) enables the randomization of the sequences in the test session. Randomization is done in a way that, if `source_id` has been defined for each sequence, no sequences with the same `source_id` can appear consecutively in the session. This conditional randomization has been applied by simply running the randomization many times until the condition is fulfilled. To avoid infinite loops, there is a limit of `max_random_tries` iterations (default = 1000).
 - `pause_after sequence` (default = false) forces that after finishing all the post-sequence questionnaires of each sequence, a "click to continue" screen appears and the test is paused until the user clicks the controller.
  
 

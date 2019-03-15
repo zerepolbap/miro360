@@ -104,7 +104,7 @@ easily differenciate them in the results file.
 - `section` is one of 
   - `idle`: The screen shows "click to continue".
   - `video`: The sequence is playing.
-  - `idle`: Post-sequence questionnaire.
+  - `questionnaire`: Post-sequence questionnaire.
 - `event` is the type of event recorded. See below.
 - `x,y,z` are the values of the event. Most events have a single value
 (just `x`). Only `LOOK_AT` uses `x,y,z`.
