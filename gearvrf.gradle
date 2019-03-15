@@ -1,0 +1,108 @@
+allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            url "http://google.bintray.com/googlevr"
+        }
+    }
+}
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "25.0.0"
+
+    buildTypes {
+        debug {
+            debuggable = true
+            jniDebuggable = true
+            resValue 'string', 'app_name', System.getProperty("appName")
+        }
+        release {
+            signingConfig signingConfigs.debug
+            resValue 'string', 'app_name', System.getProperty("appName")
+        }
+    }
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 19
+
+    }
+
+//    applicationVariants.all { variant ->
+//        variant.outputs.each { output ->
+//            output.outputFile = new File(
+//                    output.outputFile.parent,
+//                    System.getProperty("appName") + ".apk")
+//        }
+//    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                def fileName = outputFile.name.replace("app",System.getProperty("appName"))
+                outputFileName = fileName
+
+            }
+
+        }
+    }
+
+    // ignore the x86 files from the google vr libraries
+//    packagingOptions {
+//        exclude 'lib/x86/libgvr.so'
+//        if (!rootProject.hasProperty("ARM64")) {
+//            exclude 'lib/arm64-v8a/*.so'
+//        } else {
+//            exclude 'lib/armeabi-v7a/*.so'
+//        }
+//    }
+
+    packagingOptions {
+        exclude 'lib/x86/libgvr.so'
+        pickFirst 'lib/*/libc++_shared.so'
+        pickFirst 'lib/*/libgnustl_shared.so'
+        if (!project.hasProperty("ARM64")) {
+            exclude 'lib/arm64-v8a/*.so'
+        } else {
+            exclude 'lib/armeabi-v7a/*.so'
+        }
+    }
+
+//    packagingOptions {
+//        pickFirst 'lib/*/libc++_shared.so'
+//    }
+}
+
+task copyOculusSignature(type: Copy) {
+    if (rootProject.hasProperty("OCULUS_SIGS_DIRECTORY")) {
+        copy {
+            from rootProject.property("OCULUS_SIGS_DIRECTORY")
+            into 'src/main/assets'
+            include 'oculussig_*'
+        }
+    }
+}
+
+preBuild {}.dependsOn copyOculusSignature
+
+
+ext.gearvrfVersion='4.0.0'
+project.ext.jomlVersion = "1.9.1-SNAPSHOT"
+
+
+dependencies {
+    api 'com.google.code.gson:gson:2.8.1'
+    api "org.joml:joml-android:${jomlVersion}"
+    api "org.gearvrf:framework:$gearvrfVersion"
+    api "org.gearvrf:backend_daydream:$gearvrfVersion"
+    api "org.gearvrf:backend_oculus:$gearvrfVersion"
+    api 'com.google.vr:sdk-base:1.130.0'
+    api 'com.google.vr:sdk-controller:1.130.0'
+}
+
+
