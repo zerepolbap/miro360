@@ -40,7 +40,7 @@ following article...
 
 ## Installation
 
-This is a development application, and therefore it must be built from sources.
+This is a development application, and the preferred installation procedure is building it from sources.
 
 So basically you need to do the [standard procedure](http://www.gearvrf.org/getting_started/):
 
@@ -52,6 +52,13 @@ make sure to download your [Oculus signature file](https://dashboard.oculus.com/
 and copy it under `app/src/main/assets` folder
 1. Build and install. Android Studio should handle [the dependencies](http://www.gearvrf.org/getting_started/#software-requirements)
 (Oculus Mobile SDK and Google VR SDK).
+
+### Built APKs
+Alternatively, you can download the APK of the latest release (0.9.2) from:
+[MIRO360-debug.apk](http://gti.ssr.upm.es/~pab/MIRO360-debug.apk).
+
+Note that it will not contain your Oculus signature file, and therefore it 
+**will not work on Gear VR devices**. It should work on Daydream devices though. 
 
 ### Android permissions
 After installation, you need to manually enable permissions to access storage:
