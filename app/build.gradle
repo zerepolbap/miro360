@@ -4,7 +4,7 @@ plugins {
 
 apply plugin: 'com.android.application'
 
-System.setProperty("appName", "MIRO 360")
+System.setProperty("appName", "MIRO360")
 
 
 repositories {
