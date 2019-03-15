@@ -1,3 +1,27 @@
+/*
+MIT License
+
+Copyright (c) 2019 Nokia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 package com.bell_labs.drs.miro360.config;
 
 import android.content.res.Resources;
@@ -19,7 +43,7 @@ public class Playlist {
     public int max_random_tries = 1000;
     public Scale[] scales = new Scale[0];
     public Questionnaire[] questionnaires = new Questionnaire[0];
-    public Sequence[] items = new Sequence[0];
+    public Sequence[] sequences = new Sequence[0];
 
     // Internal names
     private Map<String, Scale> mScalesMap = new HashMap<String, Scale>();
@@ -81,20 +105,20 @@ public class Playlist {
         int index;
         Sequence temp;
         Random random = new Random();
-        for (int i = items.length - 1; i > 0; i--)
+        for (int i = sequences.length - 1; i > 0; i--)
         {
             index = random.nextInt(i + 1);
-            temp = items[index];
-            items[index] = items[i];
-            items[i] = temp;
+            temp = sequences[index];
+            sequences[index] = sequences[i];
+            sequences[i] = temp;
         }
     }
 
     private boolean orderIsSafe(){
-        for (int i = 0; i < items.length - 1;  i++)
+        for (int i = 0; i < sequences.length - 1; i++)
         {
-            if(!items[i].src_id.isEmpty() &&
-                    items[i].src_id.equals(items[i+1].src_id))
+            if(!sequences[i].src_id.isEmpty() &&
+                    sequences[i].src_id.equals(sequences[i+1].src_id))
                 return false;
         }
         return true;

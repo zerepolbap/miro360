@@ -1,3 +1,27 @@
+/*
+MIT License
+
+Copyright (c) 2019 Nokia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 package com.bell_labs.drs.miro360;
 
 import android.content.res.Resources;
@@ -75,7 +99,7 @@ public class TestSessionRunner {
         else if(mCurrentStep.equals(S_VIDEO)) {
             mInSeqEval.selectResponse();
         }
-        else if(mCurrentStep.equals(S_IDLE) && mCurrentItem < mPlaylist.items.length) {
+        else if(mCurrentStep.equals(S_IDLE) && mCurrentItem < mPlaylist.sequences.length) {
             step();
         }
     }
@@ -138,8 +162,8 @@ public class TestSessionRunner {
                     // Idle done. Move to video
                     mMiro360Main.mMessage.setEnable(false);
                     mCurrentStep = S_VIDEO;
-                    Log.d(TAG, "Launching video " + mPlaylist.items[mCurrentItem].uri);
-                    new SessionRunner().execute(mPlaylist.items[mCurrentItem]);
+                    Log.d(TAG, "Launching video " + mPlaylist.sequences[mCurrentItem].uri);
+                    new SessionRunner().execute(mPlaylist.sequences[mCurrentItem]);
                     break;
 
                 case S_VIDEO:
@@ -148,7 +172,7 @@ public class TestSessionRunner {
                     Log.d(TAG, "Launching post-experience questionnaire");
                     mPostSeqEval = new PostSequenceEvaluation(mMiro360Main.mActivity,
                             mPlaylist,
-                            mPlaylist.items[mCurrentItem].post_seq_questions,
+                            mPlaylist.sequences[mCurrentItem].post_seq_questions,
                             mMiro360Main.mQuestionnaireScene,
                             mEventWriter);
                     mPostSeqEval.enable();
@@ -171,8 +195,8 @@ public class TestSessionRunner {
                     mCurrentItem++;
                     break;
             }
-            if (mCurrentItem < mPlaylist.items.length) {
-                mEventWriter.setCurrentState(mCurrentItem, mPlaylist.items[mCurrentItem], mCurrentStep);
+            if (mCurrentItem < mPlaylist.sequences.length) {
+                mEventWriter.setCurrentState(mCurrentItem, mPlaylist.sequences[mCurrentItem], mCurrentStep);
                 Log.d(TAG, "Changing to " + mCurrentItem + "." + mCurrentStep);
             } else {
                 Log.d(TAG, "Done");
