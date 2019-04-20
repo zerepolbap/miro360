@@ -34,9 +34,18 @@ So far it has been successfully tested on:
 
 ## Citation
 If you use this software in your research, please cite the 
-following article... 
+following article:
 
-(*Article submitted to QoMEX 2019. Information to be updated upon acceptance.*)
+```
+@inproceedings{perez2019miro360,
+  title={{MIRO360}: A Tool for Subjective Assessment of 360 Degree Video for {ITU-T P.360-VR}},
+  author={Perez, Pablo and Escobar, Javier},
+  booktitle={2019 Eleventh International Conference on Quality of Multimedia Experience (QoMEX)},
+  pages={1--3},
+  year={2019},
+  organization={IEEE}
+}
+```
 
 ## Installation
 
