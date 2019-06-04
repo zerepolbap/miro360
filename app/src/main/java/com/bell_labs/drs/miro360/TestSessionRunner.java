@@ -102,6 +102,7 @@ public class TestSessionRunner {
         else if(mCurrentStep.equals(S_IDLE) && mCurrentItem < mPlaylist.sequences.length) {
             step();
         }
+
     }
 
     public void secondaryClick() {
@@ -117,7 +118,23 @@ public class TestSessionRunner {
     public void onStep() {
         if(mPlaying && mEventWriter != null) {
             float[] lookAt = mMiro360Main.getGVRContext().getMainScene().getMainCameraRig().getLookAt();
-            mEventWriter.writeEvent("LOOK_AT", lookAt);
+
+            // Transform to yaw/pitch/roll
+            float[] eulerAngles = new float[3];
+
+            double yaw = Math.atan2(lookAt[2], lookAt[0]) * 180 / Math.PI;
+            yaw -= mMiro360Main.sphere_rotation;
+            if (yaw <= -180)
+                yaw += 360;
+            if(yaw > 180)
+                yaw -= 360;
+
+            double pitch = Math.asin(lookAt[1]) * 180 / Math.PI;
+            eulerAngles[0] = (float) yaw;
+            eulerAngles[1] = (float) pitch;
+            eulerAngles[2] = 0; // We have no roll information
+
+            mEventWriter.writeEvent("LOOK_AT", eulerAngles);
         }
     }
 

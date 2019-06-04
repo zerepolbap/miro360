@@ -125,7 +125,10 @@ Events are related to
     - `END` of the test
     - `STATE_CHANGE` each time the section changes
 - User behaviour:
-    - `LOOK_AT`: user gaze (head tracking). Unit vector of gaze position (x,y,z)
+    - `LOOK_AT`: user gaze (head tracking). Represented by the triplet `[yaw,pitch,roll]` in degrees:
+      - `yaw` between -180 and 180, where 0 is the starting orientation.
+      - `pitch` between -90 and 90, where 0 is the horizon.
+      - `roll` is always 0 (not measured by this release of the application).
 - In-sequence evaluation:
     - `SSCQE`: value of SSCQE scale (0-99). An event is triggered each time the user
     changes the value in the control slider.

@@ -60,7 +60,7 @@ public class Miro360Main extends GVRMain {
     private static final String TAG = Miro360Main.class.getSimpleName();
 
 
-    final GVRActivity mActivity;
+    final Miro360Activity mActivity;
     final GVRVideoSceneObjectPlayer<?> mPlayer;
 
     GVRSceneObject mVideo;
@@ -74,7 +74,7 @@ public class Miro360Main extends GVRMain {
 
     private GVRPicker mPicker;
 
-    Miro360Main(GVRActivity activity) {
+    Miro360Main(Miro360Activity activity) {
         mActivity = activity;
         mPlayer =  GVRVideoSceneObject.makePlayerInstance(new MediaPlayer());
     }
@@ -165,21 +165,18 @@ public class Miro360Main extends GVRMain {
 
                 private boolean TouchpadIsDown = false;
                 private float lastY = 0.0f;
-                private long nextKeyAllowed = 0;
-                private static final long MIN_KEY_EVENT_SEPARATION = 200; //ms
 
                 @Override
                 public void onEvent(GVRCursorController gvrCursorController) {
                     KeyEvent keyEvent = gvrCursorController.getKeyEvent();
-                    if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN &&
-                            keyEvent.getDownTime() > nextKeyAllowed) {
+
+                    if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                         Log.d(TAG, "KeyEvent " + keyEvent);
                         if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                             mTest.mainClick();
                         } else if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_A) {
                             mTest.secondaryClick();
                         }
-                        nextKeyAllowed = keyEvent.getDownTime() + MIN_KEY_EVENT_SEPARATION;
                     }
 
                     MotionEvent motionEvent = gvrCursorController.getMotionEvent();
@@ -217,6 +214,7 @@ public class Miro360Main extends GVRMain {
             //Setup GearVR Controller
             if (controller.getControllerType() == GVRControllerType.CONTROLLER) {
                 controller.addControllerEventListener(controllerEventListener);
+                mActivity.enableTouchpad(false); //Disable touchpad if we find a controller
             } else {
                 controller.setEnable(false);
             }
@@ -227,6 +225,7 @@ public class Miro360Main extends GVRMain {
             if (controller.getControllerType() == GVRControllerType.CONTROLLER) {
                 controller.removeControllerEventListener(controllerEventListener);
                 controller.resetSceneObject();
+                mActivity.enableTouchpad(true); //Enable touchpad if we lose a controller (but should be good enough)
             }
         }
     };

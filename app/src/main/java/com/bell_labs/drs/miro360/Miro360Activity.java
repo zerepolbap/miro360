@@ -62,8 +62,13 @@ public class Miro360Activity extends GVRActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.v(TAG, "MotionEvent " + event);
         super.onTouchEvent(event);
+
+        if(!TouchpadIsEnabled)
+            return true;
+
+        Log.v(TAG, "MotionEvent " + event);
+
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
             lastDownTime = event.getDownTime();
             TouchpadIsDown = true;
@@ -89,7 +94,12 @@ public class Miro360Activity extends GVRActivity {
             }
         }
 
-            return true;
+        return true;
+    }
+
+    void enableTouchpad(boolean enable) {
+        Log.i(TAG, (enable ? "Enabling" : "Disabling") + " touchpad");
+        TouchpadIsEnabled = enable;
     }
 
     @Override
@@ -116,6 +126,7 @@ public class Miro360Activity extends GVRActivity {
         Log.d(TAG, "onDestroy");
     }
 
+    private boolean TouchpadIsEnabled = true;
     private boolean TouchpadIsDown = false;
     private float lastY = 0.0f;
     private long lastDownTime;
