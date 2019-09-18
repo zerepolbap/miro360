@@ -63,7 +63,7 @@ and copy it under `app/src/main/assets` folder
 (Oculus Mobile SDK and Google VR SDK).
 
 ### Built APKs
-Alternatively, you can download the APK of the latest release (0.9.2) from:
+Alternatively, you can download the APK of the latest release (1.1) from:
 [MIRO360-debug.apk](http://gti.ssr.upm.es/~pab/MIRO360-debug.apk).
 
 Note that it will not contain your Oculus signature file, and therefore it 
