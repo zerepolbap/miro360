@@ -27,10 +27,13 @@ package com.bell_labs.drs.miro360;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 
 import com.bell_labs.drs.miro360.config.Playlist;
 import com.bell_labs.drs.miro360.config.Sequence;
+
+import java.io.File;
 
 /**
  * Pair class of Miro360Main, used to handle programmed testing sessions
@@ -45,15 +48,14 @@ public class TestSessionRunner {
 
     Playlist mPlaylist = null;
     private final Miro360Main mMiro360Main;
-    private final String mSessionTag;
 
     private EventWriter mEventWriter = null;
-    private String mPlaylistPath = DEFAULT_PLAYLIST;
     public static final String S_IDLE = "idle";
     public static final String S_VIDEO = "video";
     public static final String S_QUESTION = "questionnaire";
 
     private boolean mPlaying = false;
+    private boolean mFinished = false;
     private int mCurrentItem = 0;
     private String mCurrentStep = S_IDLE;
 
@@ -61,31 +63,15 @@ public class TestSessionRunner {
     private InSequenceEvaluation mInSeqEval;
 
     private Resources mRes;
+    private Listener mListener;
 
-    public TestSessionRunner(Miro360Main main) {
-        this(main, DEFAULT_SESSION_TAG, DEFAULT_PLAYLIST);
-    }
 
-    public TestSessionRunner(Miro360Main main, String tag, String playlistPath) {
+    public TestSessionRunner(Miro360Main main, Listener listener) {
         mMiro360Main = main;
-        mSessionTag = tag != null ? tag : DEFAULT_SESSION_TAG;
-        mPlaylistPath = playlistPath != null ? playlistPath : DEFAULT_PLAYLIST;
         mRes = mMiro360Main.mActivity.getResources();
-
+        mListener = listener;
     }
 
-
-    public void play() {
-        startPlay(mPlaylistPath);
-    }
-
-    public void stop() {
-
-    }
-
-    public boolean isPlaying() {
-        return mPlaying;
-    }
 
     public void mainClick() {
         if(!mPlaying) {
@@ -139,12 +125,12 @@ public class TestSessionRunner {
     }
 
 
-    private void startPlay(String playlistPath) {
+    public void startPlay(File directory, String playlistPath, String tag, String userID) {
         if(mPlaying)
             return;
-        mPlaylist = Playlist.fromFile(playlistPath, mRes);
+        mPlaylist = Playlist.fromFile(directory, playlistPath, mRes);
         Log.d(TAG, "PLAYING: \n" + mPlaylist);
-        mEventWriter = new EventWriter(mSessionTag);
+        mEventWriter = new EventWriter(tag, userID);
         // In-sequence question
         mInSeqEval = new InSequenceEvaluation(mMiro360Main.getGVRContext(), mMiro360Main.mQuestionnaireScene, mMiro360Main.mSlider);
         mInSeqEval.setEventWriter(mEventWriter);
@@ -159,13 +145,16 @@ public class TestSessionRunner {
 
     private void finishPlay() {
         mPlaying = false;
+        mFinished = true;
         mMiro360Main.mMessage.setText(mRes.getString(R.string.test_finished));
         mMiro360Main.mMessage.setEnable(true);
         mEventWriter.close();
         mEventWriter = null;
         mInSeqEval.setEventWriter(null);
         mInSeqEval = null;
+        report();
     }
+
 
     private void step() {
         Log.v(TAG, "New step");
@@ -225,7 +214,13 @@ public class TestSessionRunner {
                 return; // No more "step" iterations, regardless the value of "next"
             }
         }
+        report();
 
+    }
+
+    private void report() {
+        if(mListener != null)
+            mListener.OnTestSessionStateChange(getState());
     }
 
     private void idleMessage() {
@@ -326,4 +321,24 @@ public class TestSessionRunner {
         }
     }
 
+
+    public String getState() {
+        if(mFinished)
+            return "Finished";
+
+        if(!mPlaying)
+            return "Not playing";
+
+        if(mPlaylist == null)
+            return "No playlist";
+
+        if(mCurrentItem >= mPlaylist.sequences.length)
+            return "End of playlist";
+
+        return "" + (mCurrentItem+1) + "/" + mPlaylist.sequences.length + " (" + mCurrentStep + ")";
+    }
+
+    public interface Listener {
+        void OnTestSessionStateChange(String state);
+    }
 }

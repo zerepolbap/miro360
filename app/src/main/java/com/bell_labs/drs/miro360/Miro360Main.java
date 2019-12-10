@@ -62,6 +62,7 @@ public class Miro360Main extends GVRMain {
 
     final Miro360Activity mActivity;
     final GVRVideoSceneObjectPlayer<?> mPlayer;
+    final TestSessionSetup mTestSetup;
 
     GVRSceneObject mVideo;
     GVRTextViewSceneObject mMessage;
@@ -74,9 +75,10 @@ public class Miro360Main extends GVRMain {
 
     private GVRPicker mPicker;
 
-    Miro360Main(Miro360Activity activity) {
+    Miro360Main(Miro360Activity activity, TestSessionSetup setup) {
         mActivity = activity;
         mPlayer =  GVRVideoSceneObject.makePlayerInstance(new MediaPlayer());
+        mTestSetup = setup;
     }
 
     void setTest(TestSessionRunner mode) {
@@ -132,12 +134,15 @@ public class Miro360Main extends GVRMain {
         mMessage.setBackgroundColor(Color.BLACK);
         mMessage.getTransform().setPosition(0.0f, -1.0f, -4.0f);
         scene.getMainCameraRig().addChildObject(mMessage);
-        mMessage.setEnable(false);
+        mMessage.setText("Loading...");
+        mMessage.setEnable(true);
 
         // SliderSceneObject for in-sequence evaluation
         mSlider = new SliderSceneObject(gvrContext);
 
-
+        // Create and launch test control logic
+        mTestSetup.init(this);
+        mTest = mTestSetup.getRunner();
 
         //Add controller if detected any
         for (GVRCursorController cursor : input.getCursorControllers()) {
@@ -150,7 +155,7 @@ public class Miro360Main extends GVRMain {
     public void onAfterInit() {
         Log.d(TAG, "onAfterInit");
         super.onAfterInit();
-        mTest.play();
+        mTestSetup.launch();
     }
 
     @Override

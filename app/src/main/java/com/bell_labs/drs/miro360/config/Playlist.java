@@ -30,6 +30,7 @@ import android.util.Log;
 import com.bell_labs.drs.gearvr.LocalReality;
 import com.bell_labs.drs.miro360.util.GsonLoader;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -51,12 +52,10 @@ public class Playlist {
     private Map<String, Scale> mScalesMap = new HashMap<String, Scale>();
     private Map<String, Questionnaire> mQuestionsMap = new HashMap<String, Questionnaire>();
 
-    public static Playlist fromFile(String playlistPath, Resources res) {
-      Playlist playlist = GsonLoader.load(playlistPath, Playlist.class);
+    public static Playlist fromFile(File directory, String playlistPath, Resources res) {
+        Playlist playlist = GsonLoader.loadPath(directory, playlistPath, Playlist.class);
         playlist.init(res);
-        if(playlist.randomize)
-            playlist.shuffle();
-      return playlist;
+        return playlist;
     }
 
     public Scale getScale(String name) {
@@ -90,6 +89,10 @@ public class Playlist {
         for(Questionnaire questionnaire : questionnaires) {
             mQuestionsMap.put(questionnaire.name, questionnaire);
         }
+
+        // Shuffle if needed
+        if(randomize)
+            shuffle();
     }
 
     private void shuffle() {

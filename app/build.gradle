@@ -113,6 +113,11 @@ dependencies {
     api "org.gearvrf:backend_oculus:$gearvrfVersion"
     api 'com.google.vr:sdk-base:1.130.0'
     api 'com.google.vr:sdk-controller:1.130.0'
+    api group: 'org.ini4j', name: 'ini4j', version: '0.5.4'
+    api('io.socket:socket.io-client:1.0.0') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
 }
 
 

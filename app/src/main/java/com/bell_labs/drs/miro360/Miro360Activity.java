@@ -46,16 +46,16 @@ public class Miro360Activity extends GVRActivity {
 
         Intent intent = getIntent();
 
-        mMain = new Miro360Main(this);
         if(intent.getBooleanExtra("scheduledMode", false)) {
             String tag = intent.getStringExtra("resultTag");
             String playlist = intent.getStringExtra("playlist");
-            mTest = new TestSessionRunner(mMain, tag, playlist);
+            String userid = intent.getStringExtra("userID");
+            mTestSetup = new TestSessionSetup(this, tag, userid, playlist);
         }
         else {
-            mTest = new TestSessionRunner(mMain);
+            mTestSetup = new TestSessionSetup(this);
         }
-        mMain.setTest(mTest);
+        mMain = new Miro360Main(this, mTestSetup);
         setMain(mMain);
         Log.d(TAG, "OnCreate (done)");
     }
@@ -67,6 +67,13 @@ public class Miro360Activity extends GVRActivity {
         if(!TouchpadIsEnabled)
             return true;
 
+        TestSessionRunner test = mTestSetup.getRunner();
+
+        if(test == null) {
+            Log.w(TAG, "Trying to use non-initialized test. Probably unwanted!");
+            return true;
+        }
+
         Log.v(TAG, "MotionEvent " + event);
 
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
@@ -77,10 +84,10 @@ public class Miro360Activity extends GVRActivity {
 
         if (event.getActionMasked() == MotionEvent.ACTION_UP) {
             if (event.getEventTime() - lastDownTime < 200) {
-                mTest.mainClick();
+                test.mainClick();
             }
             else if(event.getEventTime() - lastDownTime > 2000) {
-                mTest.secondaryClick();
+                test.secondaryClick();
             }
             TouchpadIsDown = false;
         }
@@ -89,7 +96,7 @@ public class Miro360Activity extends GVRActivity {
             int increment = (int)((lastY-y)/10); // inc = -delta(y)
             if(increment != 0) {
                 Log.d(TAG, "MotionEvent " + increment);
-                mTest.slider(increment);
+                test.slider(increment);
                 lastY = y;
             }
         }
@@ -131,6 +138,6 @@ public class Miro360Activity extends GVRActivity {
     private float lastY = 0.0f;
     private long lastDownTime;
     private Miro360Main mMain;
-    private TestSessionRunner mTest;
+    private TestSessionSetup mTestSetup;
 
 }

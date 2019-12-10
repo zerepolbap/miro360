@@ -56,7 +56,7 @@ public class EventWriter {
     private long mTimeStampOffsetNs = 0;
 
 
-    public EventWriter(String tag) {
+    public EventWriter(String tag, String userID) {
         HandlerThread handlerThread = new HandlerThread("WriterThread");
         handlerThread.start();
         mHandler = new Handler(handlerThread.getLooper());
@@ -72,7 +72,7 @@ public class EventWriter {
             parent.mkdir();
         if(!dir.exists())
             dir.mkdir();
-        String filename = tag + "_" + wallclock_ms + ".log";
+        String filename = tag + "_" + userID + "_" + wallclock_ms + ".log";
         File logfile = new File(dir, filename);
         boolean shouldWritePrefix = logfile.exists();
         try {
