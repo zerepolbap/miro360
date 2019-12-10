@@ -58,6 +58,7 @@ public class Sequence {
     public float duration = 0.0f;
     public float start = 0.0f;
     public float orientation = 0.0f;
+    public boolean stereo = false;
 
     // Metadata
     public String src_id = ""; // Source ID. Randomization must guarantee that two consecutive PVS do not share SRC
@@ -80,7 +81,7 @@ public class Sequence {
     public Sequence() {}
 
 
-    public void prepareVideo(Activity activity, GVRSceneObject videoObject, float orientation_offset, MediaPlayer player) {
+    public void prepareVideo(Activity activity, MediaPlayer player) {
         mPlayer = player;
         setPlayerDataSource(activity);
         try {
@@ -92,7 +93,6 @@ public class Sequence {
             // Compute duration automatically
             duration = mPlayer.getDuration() / 1000.0f - start;
         }
-        videoObject.getTransform().setRotationByAxis(orientation + orientation_offset, 0, 1, 0);
     }
 
     public void startVideo() {

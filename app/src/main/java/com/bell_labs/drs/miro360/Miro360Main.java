@@ -45,6 +45,7 @@ import org.gearvrf.animation.GVRAnimationEngine;
 import org.gearvrf.io.CursorControllerListener;
 import org.gearvrf.io.GVRControllerType;
 import org.gearvrf.io.GVRInputManager;
+import org.gearvrf.scene_objects.FixedGVRVideoSceneObject;
 import org.gearvrf.scene_objects.GVRSphereSceneObject;
 import org.gearvrf.scene_objects.GVRTextViewSceneObject;
 import org.gearvrf.scene_objects.GVRVideoSceneObject;
@@ -63,7 +64,6 @@ public class Miro360Main extends GVRMain {
     final Miro360Activity mActivity;
     final GVRVideoSceneObjectPlayer<?> mPlayer;
     final TestSessionSetup mTestSetup;
-
     GVRSceneObject mVideo;
     GVRTextViewSceneObject mMessage;
     GVRAnimationEngine mEngine;
@@ -72,8 +72,10 @@ public class Miro360Main extends GVRMain {
     SliderSceneObject mSlider;
 
     float sphere_rotation = -90; // fix to correct weird orientation of sphere textures
+    boolean stereo_video = false; // control type of scene object
 
     private GVRPicker mPicker;
+    private GVRContext mContext;
 
     Miro360Main(Miro360Activity activity, TestSessionSetup setup) {
         mActivity = activity;
@@ -97,6 +99,7 @@ public class Miro360Main extends GVRMain {
     @Override
     public void onInit(GVRContext gvrContext) {
         Log.d(TAG, "onInit");
+        mContext = gvrContext;
         GVRScene scene = gvrContext.getMainScene();
 
         // Background picture
@@ -108,13 +111,7 @@ public class Miro360Main extends GVRMain {
         scene.addSceneObject(sphereObject);
 
         // Video sphere
-        GVRSphereSceneObject sphere = new GVRSphereSceneObject(gvrContext, 72, 144, false);
-        GVRMesh mesh = sphere.getRenderData().getMesh();
-        mVideo = new GVRVideoSceneObject(gvrContext, mesh, mPlayer, GVRVideoType.MONO);
-        mVideo.setName("Video");
-        mVideo.getTransform().setScale(250f, 250f, 250f);
-        mVideo.getTransform().setRotationByAxis(sphere_rotation, 0, 1, 0);
-        scene.addSceneObject(mVideo);
+        updateVideoSceneObject(stereo_video, 0);
 
         // Animation engine (for video)
         mEngine = gvrContext.getAnimationEngine();
@@ -236,4 +233,22 @@ public class Miro360Main extends GVRMain {
     };
 
 
+    public void updateVideoSceneObject(boolean stereo, float video_rotation) {
+        if(mVideo == null || (stereo != stereo_video)) {
+            GVRScene mainScene = mContext.getMainScene();
+            if(mVideo != null)
+                mainScene.removeSceneObject(mVideo);
+
+            GVRSphereSceneObject sphere = new GVRSphereSceneObject(mContext, 72, 144, false);
+            GVRMesh mesh = sphere.getRenderData().getMesh();
+            mVideo = new FixedGVRVideoSceneObject(mContext, mesh, mPlayer, stereo ? GVRVideoType.VERTICAL_STEREO : GVRVideoType.MONO);
+            mVideo.setName("Video");
+            mVideo.getTransform().setScale(250f, 250f, 250f);
+            mainScene.addSceneObject(mVideo);
+
+            stereo_video = stereo;
+        }
+        if(mVideo != null)
+            mVideo.getTransform().setRotationByAxis(sphere_rotation + video_rotation, 0, 1, 0);
+    }
 }

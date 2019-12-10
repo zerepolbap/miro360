@@ -249,13 +249,13 @@ public class TestSessionRunner {
 
             final Sequence sequence = vertigoSquences[0];
 
-            sequence.prepareVideo(mMiro360Main.mActivity, mMiro360Main.mVideo, mMiro360Main.sphere_rotation,
-                    (MediaPlayer) mMiro360Main.mPlayer.getPlayer());
+            sequence.prepareVideo(mMiro360Main.mActivity, (MediaPlayer) mMiro360Main.mPlayer.getPlayer());
 
             mMiro360Main.mActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     sequence.startVideo();
+                    mMiro360Main.updateVideoSceneObject(sequence.stereo, sequence.orientation);
                     mMiro360Main.mVideo.setEnable(true);
                     mInSeqEval.setEnable(true, sequence.in_seq_method,
                             mPlaylist.getScale(sequence.in_seq_scale));
