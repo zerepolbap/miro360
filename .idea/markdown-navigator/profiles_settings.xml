@@ -1,3 +1,3 @@
 <component name="MarkdownNavigator.ProfileManager">
-  <settings default="" pdf-export="" />
+  <settings plain-text-search-scope="!predefined.scope.project.files.name!" />
 </component>

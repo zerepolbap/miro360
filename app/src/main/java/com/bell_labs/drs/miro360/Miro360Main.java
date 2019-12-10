@@ -110,7 +110,7 @@ public class Miro360Main extends GVRMain {
         GVRMesh mesh = sphere.getRenderData().getMesh();
         mVideo = new GVRVideoSceneObject(gvrContext, mesh, mPlayer, GVRVideoType.MONO);
         mVideo.setName("Video");
-        mVideo.getTransform().setScale(100f, 100f, 100f);
+        mVideo.getTransform().setScale(250f, 250f, 250f);
         mVideo.getTransform().setRotationByAxis(sphere_rotation, 0, 1, 0);
         scene.addSceneObject(mVideo);
 

@@ -148,6 +148,10 @@ public class TestSessionRunner {
         // In-sequence question
         mInSeqEval = new InSequenceEvaluation(mMiro360Main.getGVRContext(), mMiro360Main.mQuestionnaireScene, mMiro360Main.mSlider);
         mInSeqEval.setEventWriter(mEventWriter);
+        // Local reality (mixed reality)
+        if (mPlaylist.local_reality != null) {
+            mPlaylist.local_reality.init(mMiro360Main.mActivity, mMiro360Main.getGVRContext());
+        }
 
         mPlaying = true;
         idleMessage();

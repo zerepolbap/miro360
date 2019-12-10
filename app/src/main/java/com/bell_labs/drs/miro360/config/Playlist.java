@@ -27,6 +27,7 @@ package com.bell_labs.drs.miro360.config;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.bell_labs.drs.gearvr.LocalReality;
 import com.bell_labs.drs.miro360.util.GsonLoader;
 
 import java.util.HashMap;
@@ -44,6 +45,7 @@ public class Playlist {
     public Scale[] scales = new Scale[0];
     public Questionnaire[] questionnaires = new Questionnaire[0];
     public Sequence[] sequences = new Sequence[0];
+    public LocalReality local_reality = null;
 
     // Internal names
     private Map<String, Scale> mScalesMap = new HashMap<String, Scale>();
